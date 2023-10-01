@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block title %}Prediction result{% endblock title %}
+{% block content %}
+    <h1>Result: {{ drug_type }}</h1>
+    <a class="btn btn-primary" href="{% url 'model' %}">Try again</a>
+{% endblock content %}

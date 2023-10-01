@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}ML{% endblock title %}
+{% block content %}
+    <h1>Predict drug type</h1>
+    {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+          {{ error_message }}
+        </div>
+    {% endif %}
+    <form method="post">
+{#      {% csrf_token %}#}
+      <div class="mb-3">
+        <label for="age" class="form-label">Age</label>
+        <input type="number" class="form-control" id="age" name="age">
+      </div>
+      <div class="mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <select class="form-select" id="gender" name="gender">
+          <option value="M">Male</option>
+          <option value="F">Female</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="blood_pressure" class="form-label">Blood pressure</label>
+        <select class="form-select" id="blood_pressure" name="blood_pressure">
+          <option value="LOW">LOW</option>
+          <option value="NORMAL">NORMAL</option>
+          <option value="HIGH">HIGH</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="cholesterol" class="form-label">Cholesterol</label>
+        <select class="form-select" id="cholesterol" name="cholesterol">
+          <option value="NORMAL">NORMAL</option>
+          <option value="HIGH">HIGH</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="Na_to_K" class="form-label">Na to Potassium Ratio</label>
+        <input type="number" class="form-control" id="Na_to_K" name="Na_to_K">
+      </div>
+      <button type="submit" class="btn btn-primary">Predict</button>
+    </form>
+{% endblock content %}
