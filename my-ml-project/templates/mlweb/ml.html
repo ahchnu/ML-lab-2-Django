@@ -5,6 +5,12 @@
     <h1>Predict drug type</h1>
     <form method="post">
         <div class="mb-3">
+            <label for="prediction_model">Select a Model:</label>
+            <select class="form-select" id="prediction_model" name="prediction_model">
+                {% for model in available_models %}
+                    <option value="{{ model.name }}">{{ model.name }}</option>
+                {% endfor %}
+            </select>
             <div class="d-flex align-items-center">
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input"

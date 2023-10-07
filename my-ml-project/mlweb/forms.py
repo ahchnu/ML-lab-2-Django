@@ -10,6 +10,7 @@ class ModelValidationForm(forms.Form):
 
 
 class CustomModelValidationForm(forms.Form):
+    prediction_model = forms.CharField(required=False)
     age = forms.IntegerField(required=False)
     gender = forms.CharField(required=False)
     blood_pressure = forms.CharField(required=False)

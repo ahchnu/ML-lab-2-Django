@@ -2,11 +2,31 @@ import os
 import pickle
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 
 
 MODELS_PATH = os.path.join(os.getcwd(), 'mlweb', 'ai', 'models')
 MODEL_MAX_COLUMN_COUNT = 5
+
+AVAILABLE_MODELS = [
+    {
+        'name': 'Decision Tree Classifier',
+        'file_name': 'decision_tree_classifier_model.pkl',
+        'classifier': DecisionTreeClassifier()
+    },
+    {
+        'name': 'K-Nearest Neighbors',
+        'file_name': 'k_nearest_neighbors_model.pkl',
+        'classifier': KNeighborsClassifier()
+    },
+    {
+        'name': 'Support Vector Machine',
+        'file_name': 'support_vector_machine_model.pkl',
+        'classifier': SVC()
+    }
+]
 
 
 with open(os.path.join(MODELS_PATH, 'le', 'Sex.pkl'), 'rb') as encoders_file:
@@ -25,10 +45,11 @@ with open(os.path.join(MODELS_PATH, 'le', 'Drug.pkl'), 'rb') as encoders_file:
     le_drug = pickle.load(encoders_file)
 
 
-def get_model(df):
+def get_model(df, model_name):
+    _, file_name, classifier = get_model_by_name(model_name)
     # if we use all X, then we return prepared model
     if len(df.columns) == MODEL_MAX_COLUMN_COUNT:
-        with open(os.path.join(MODELS_PATH, 'decision_tree_classifier_model.pkl'), 'rb') as model_file:
+        with open(os.path.join(MODELS_PATH, file_name), 'rb') as model_file:
             return pickle.load(model_file)
     # otherwise, we create new model
     df_drug = pd.read_csv(os.path.join(MODELS_PATH, 'drug200.csv'))
@@ -48,10 +69,16 @@ def get_model(df):
     y = df_drug["Drug"].values
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=33)
 
-    prediction_model = DecisionTreeClassifier()
-    prediction_model.fit(X_train, y_train)
+    classifier.fit(X_train, y_train)
 
-    return prediction_model
+    return classifier
+
+
+def get_model_by_name(name):
+    for model_data in AVAILABLE_MODELS:
+        if model_data['name'] == name:
+            return model_data['name'], model_data['file_name'], model_data['classifier']
+    return None, None, None
 
 
 def get_input_data(form_data):
