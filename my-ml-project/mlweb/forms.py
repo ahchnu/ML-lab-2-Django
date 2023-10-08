@@ -7,6 +7,7 @@ class ModelValidationForm(forms.Form):
     blood_pressure = forms.CharField()
     cholesterol = forms.CharField()
     Na_to_K = forms.FloatField()
+    drug = forms.CharField()
 
 
 class CustomModelValidationForm(forms.Form):

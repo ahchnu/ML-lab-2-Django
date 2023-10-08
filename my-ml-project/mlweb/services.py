@@ -8,6 +8,7 @@ from sklearn.model_selection import train_test_split
 
 
 MODELS_PATH = os.path.join(os.getcwd(), 'mlweb', 'ai', 'models')
+CSV_FILE_NAME = 'drug200.csv'
 MODEL_MAX_COLUMN_COUNT = 5
 
 AVAILABLE_MODELS = [
@@ -52,7 +53,7 @@ def get_model(df, model_name):
         with open(os.path.join(MODELS_PATH, file_name), 'rb') as model_file:
             return pickle.load(model_file)
     # otherwise, we create new model
-    df_drug = pd.read_csv(os.path.join(MODELS_PATH, 'drug200.csv'))
+    df_drug = pd.read_csv(os.path.join(MODELS_PATH, CSV_FILE_NAME))
 
     df_drug['Sex'] = le_sex.transform(df_drug['Sex'])
     df_drug['BP'] = le_bp.transform(df_drug['BP'])
@@ -109,3 +110,36 @@ def get_input_data(form_data):
 
 def inverse_y(predicted_label):
     return le_drug.inverse_transform([predicted_label])[0]
+
+
+def get_data_count():
+    df = pd.read_csv(os.path.join(MODELS_PATH, CSV_FILE_NAME))
+    custom_csv_path = os.path.join(MODELS_PATH, 'custom_' + CSV_FILE_NAME)
+    if not os.path.isfile(custom_csv_path):
+        df_custom = pd.DataFrame(columns=df.columns)
+        df_custom.to_csv(custom_csv_path, index=False)
+    df_custom = pd.read_csv(custom_csv_path)
+    return len(df) + len(df_custom)
+
+
+def add_data(form_data):
+    age = form_data['age']
+    gender = form_data['gender']
+    blood_pressure = form_data['blood_pressure']
+    cholesterol = form_data['cholesterol']
+    na_to_k = form_data['Na_to_K']
+    drug = form_data['drug']
+
+    input_data = pd.DataFrame({
+        'Age': [age],
+        'Sex': [gender],
+        'BP': [blood_pressure],
+        'Cholesterol': [cholesterol],
+        'Na_to_K': [na_to_k],
+        'Drug': [drug]
+    })
+
+    custom_csv_path = os.path.join(MODELS_PATH, 'custom_' + CSV_FILE_NAME)
+    df = pd.read_csv(custom_csv_path)
+    df = pd.concat([df, input_data], ignore_index=True)
+    df.to_csv(custom_csv_path, index=False)

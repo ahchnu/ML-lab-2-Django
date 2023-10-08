@@ -1,6 +1,6 @@
 from sklearn.tree import DecisionTreeClassifier
 from django.shortcuts import render
-from .forms import CustomModelValidationForm
+from .forms import CustomModelValidationForm, ModelValidationForm
 from . import services
 
 
@@ -26,9 +26,22 @@ def model(request):
             original_label = services.inverse_y(prediction[0])
 
             context['drug_type'] = original_label
-            # context = {"drug_type": original_label}
             return render(request, "mlweb/ml_result.html", context)
         else:
             context['form'] = form
-            # context = {"form": form}
             return render(request, "mlweb/ml.html", context)
+
+
+def add_data(request):
+    context = {'data_count': services.get_data_count()}
+    if request.method == 'GET':
+        return render(request, 'mlweb/add_data.html', context)
+    if request.method == 'POST':
+        form = ModelValidationForm(request.POST)
+        if form.is_valid():
+            services.add_data(form.cleaned_data)
+            context['data_count'] = services.get_data_count()
+            return render(request, 'mlweb/add_data.html', context)
+        else:
+            context['form'] = form
+            return render(request, "mlweb/add_data.html", context)
