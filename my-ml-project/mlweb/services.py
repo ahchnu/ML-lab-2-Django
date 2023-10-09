@@ -54,6 +54,9 @@ def get_model(df, model_name):
             return pickle.load(model_file)
     # otherwise, we create new model
     df_drug = pd.read_csv(os.path.join(MODELS_PATH, CSV_FILE_NAME))
+    custom_csv_path = os.path.join(MODELS_PATH, 'custom_' + CSV_FILE_NAME)
+    df_drug_custom = pd.read_csv(custom_csv_path)
+    df_drug = pd.concat([df_drug, df_drug_custom], ignore_index=True)
 
     df_drug['Sex'] = le_sex.transform(df_drug['Sex'])
     df_drug['BP'] = le_bp.transform(df_drug['BP'])
